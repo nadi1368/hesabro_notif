@@ -1,0 +1,44 @@
+{
+    "name": "hesabro/notif",
+    "description": "Hesabro Notif Package",
+    "type": "yii2-extension",
+    "authors": [
+        {
+            "name": "Nader Bahadori",
+            "email": "nader.bahadorii@gmail.com"
+        },
+        {
+            "name": "Moslem Tayari",
+            "email": "avapardazmota@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.14",
+        "hesabro/helpers": "*",
+        "hesabro/change-log": "*",
+        "hesabro/error-log": "*",
+        "yiisoft/yii2-bootstrap4": "^2.0",
+        "yii2tech/ar-softdelete": "*"
+    },
+    "minimum-stability": "stable",
+    "license": "BSD-3-Clause",
+    "autoload": {
+        "psr-4": {
+            "hesabro\\notif\\": "src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
+    },
+    "extra": {
+        "bootstrap": "hesabro\\notif\\Bootstrap"
+    }
+}
