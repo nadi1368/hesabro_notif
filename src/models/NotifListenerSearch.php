@@ -6,15 +6,14 @@ use hesabro\notif\Module;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
-class NotifSearch extends Notif
+class NotifListenerSearch extends NotifListener
 {
     public function rules()
     {
         return [
-            ['user_id', 'integer'],
-            ['title', 'string'],
-            ['seen', 'boolean'],
-            ['user_id', 'exist', 'targetClass' => Module::getInstance()->user, 'targetAttribute' => ['user_id' => 'id']]
+            [['title', 'event', 'userType'], 'string'],
+            ['userType', 'in', 'range' => [self::USER_DYNAMIC, self::USER_STATIC]],
+            ['event', 'in', 'range' => Module::getInstance()->eventsKey],
         ];
     }
 
@@ -36,10 +35,10 @@ class NotifSearch extends Notif
             return $dataProvider;
         }
 
+        $query->andFilterUserType($this->userType);
         $query->andFilterWhere([
             'title' => $this->title,
-            'user_id' => $this->user_id,
-            'seen' => $this->seen,
+            'event' => $this->event,
         ]);
 
         return $dataProvider;

@@ -32,18 +32,10 @@ class Notif extends ActiveRecord
 
     public static function collectionName(): string
     {
-        return 'notifs';
+        return '{{%notifs}}';
     }
 
-    public function attributes(): array
-    {
-        return [
-            '_id', 'seen', 'user_id', 'send_sms', 'send_sms_delay', 'send_email', 'send_email_delay',
-            'title', 'description', 'class_name', 'class_id', 'created_by', 'created_at', 'slave_id'
-        ];
-    }
-
-    public function rules(): array
+    public function rules()
     {
         return [
             [['send_sms', 'send_sms_delay', 'send_email', 'send_email_delay'], 'default', 'value' => 0],
@@ -51,6 +43,7 @@ class Notif extends ActiveRecord
             [['title', 'description'], 'string'],
             [['seen'], 'boolean'],
             [['seen'], 'default', 'value' => false],
+            ['user_id', 'exist', 'targetClass' => Module::getInstance()->user, 'targetAttribute' => ['user_id' => 'id']]
         ];
     }
 

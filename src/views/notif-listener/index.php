@@ -1,14 +1,15 @@
 <?php
 
-use common\models\CommentsType;
+use hesabro\helpers\widgets\grid\GridView;
+use hesabro\notif\models\NotifListener;
+use hesabro\notif\models\NotifListenerSearch;
+use hesabro\notif\Module;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use common\widgets\grid\GridView;
-use common\components\Helper;
 
-/* @var $this yii\web\View */
-/* @var $searchModel backend\models\CommentsTypeSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var yii\web\View $this */
+/* @var NotifListenerSearch $searchModel */
+/* @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Yii::t('app', 'Notification System');
 $this->params['breadcrumbs'][] = $this->title;
@@ -71,30 +72,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'title',
                 [
-                    'attribute' => 'key',
-                    'value' => function (CommentsType $model) {
-                        return CommentsType::itemAlias('KeyType', $model->key);
-                    },
-                    'format' => 'raw'
-                ],
-                [
-                    'attribute' => 'is_auto',
-                    'value' => function (CommentsType $model) {
-                        return Helper::itemAlias('CheckboxIcon',$model->is_auto);
+                    'attribute' => 'event',
+                    'value' => function (NotifListener $model) {
+                        return NotifListener::itemAlias('Events', $model->event);
                     },
                     'format' => 'raw'
                 ],
                 [
                     'attribute' => 'sendSms',
-                    'value' => function (CommentsType $model) {
-                        return Helper::itemAlias('CheckboxIcon',(int)$model->sendSms);
+                    'value' => function (NotifListener $model) {
+                        return Yii::$app->helper::itemAlias('CheckboxIcon',(int)$model->sms);
                     },
                     'format' => 'raw'
                 ],
                 [
                     'attribute' => 'sendMail',
-                    'value' => function (CommentsType $model) {
-                        return Helper::itemAlias('CheckboxIcon',(int)$model->sendMail);
+                    'value' => function (NotifListener $model) {
+                        return Yii::$app->helper::itemAlias('CheckboxIcon',(int)$model->email);
                     },
                     'format' => 'raw'
                 ],
@@ -105,9 +99,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         'update' => function ($url, $model, $key) {
                             return $model->canUpdate() ? Html::a('<span class="fa fa-edit text-primary"></span>',
                                 'javascript:void(0)', [
-                                    'title' => Yii::t('app', 'Update'),
+                                    'title' => Module::t('module', 'Update'),
                                     'data-size' => 'modal-lg',
-                                    'data-title' => Yii::t('app', 'Update'),
+                                    'data-title' => Module::t('module', 'Update'),
                                     'data-toggle' => 'modal',
                                     'data-target' => '#modal-pjax',
                                     'data-url' => Url::to(['update', 'id' => $model->id]),
@@ -136,7 +130,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ['/mongo/log/view-ajax', 'modelId' => $model->id, 'modelClass' => get_class($model)],
                                 [
                                     'class' => 'text-secondary showModalButton',
-                                    'title' => Yii::t('app', 'Logs'),
+                                    'title' => Module::t('module', 'Logs'),
                                     'data-size' => 'modal-xl'
                                 ]
                             );

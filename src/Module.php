@@ -7,6 +7,11 @@ use hesabro\notif\interfaces\Notify;
 use Yii;
 use yii\base\Module as BaseModule;
 
+/**
+ * @property-read int|null $clientId
+ * @property-read array $eventsKey
+ * @property-read array $eventsValue
+ */
 class Module extends BaseModule
 {
     public bool $enable = true;
@@ -20,6 +25,8 @@ class Module extends BaseModule
     public ?string $email = null;
 
     public ?string $clientComponent = null;
+
+    public array $events = [];
 
     public function init()
     {
@@ -41,5 +48,20 @@ class Module extends BaseModule
         }
 
         return 1;
+    }
+
+    public function getEventsKey(): array
+    {
+        return array_keys($this->events);
+    }
+
+    public function getEventsValue(): array
+    {
+        return array_keys($this->events);
+    }
+
+    public static function t($category, $message, $params = [], $language = null): string
+    {
+        return Yii::t('hesabro/notif/' . $category, $message, $params, $language);
     }
 }
