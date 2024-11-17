@@ -36,10 +36,8 @@ class NotifListenerSearch extends NotifListener
         }
 
         $query->andFilterUserType($this->userType);
-        $query->andFilterWhere([
-            'title' => $this->title,
-            'event' => $this->event,
-        ]);
+        $query->andFilterWhere(['like', 'title', $this->title]);
+        $query->andFilterWhere(['event' => $this->event]);
 
         return $dataProvider;
     }

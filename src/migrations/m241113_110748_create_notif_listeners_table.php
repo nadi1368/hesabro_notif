@@ -28,7 +28,7 @@ class m241113_110748_create_notif_listeners_table extends Migration
 
         $this->addPrimaryKey('PRIMARYKEY', '{{%notif_listeners}}', ['id', 'slave_id']);
         $this->alterColumn("{{%notif_listeners}}", 'id', $this->integer()->unsigned()->notNull()->append('AUTO_INCREMENT'));
-        $this->createIndex('idx_key', '{{%notif_listeners}}', ['key']);
+        $this->createIndex('idx_event', '{{%notif_listeners}}', ['event']);
         $this->createIndex('idx_slave_id', '{{%notif_listeners}}', ['slave_id']);
     }
 

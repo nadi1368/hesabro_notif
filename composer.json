@@ -1,5 +1,6 @@
 {
     "name": "hesabro/notif",
+    "version": "1.0.0",
     "description": "Hesabro Notif Package",
     "type": "yii2-extension",
     "authors": [
@@ -40,5 +41,8 @@
     },
     "extra": {
         "bootstrap": "hesabro\\notif\\Bootstrap"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^6.4"
     }
 }

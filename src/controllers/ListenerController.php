@@ -17,7 +17,7 @@ use yii\filters\AccessControl;
 /**
  * CommentsTypeController implements the CRUD actions for CommentsType model.
  */
-class NotifListenerController extends Controller
+class ListenerController extends Controller
 {
     use AjaxValidationTrait;
 
@@ -36,14 +36,14 @@ class NotifListenerController extends Controller
                     [
                         [
                             'allow' => true,
-                            'roles' => ['notif-listener/view'],
+                            'roles' => ['notif-listener/view', 'superadmin'],
                             'actions' => [
                                 'index', 'view'
                             ]
                         ],
                         [
                             'allow' => true,
-                            'roles' => ['notif-listener/actions'],
+                            'roles' => ['notif-listener/actions', 'superadmin'],
                             'actions' => [
                                 'create', 'update', 'delete'
                             ]
@@ -158,7 +158,7 @@ class NotifListenerController extends Controller
 
         $result = [
             'status' => false,
-            'message' => Yii::t("app", "Error In Save Info")
+            'message' => Module::t('module', 'Error In Save Info')
         ];
 
         $transaction = \Yii::$app->db->beginTransaction();

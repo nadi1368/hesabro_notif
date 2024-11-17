@@ -7,7 +7,7 @@ use hesabro\notif\Module;
 /* @var NotifListener $model */
 
 $this->title = Module::t('module', 'Update');
-$this->params['breadcrumbs'][] = ['label' => Module::t('module', 'Notification System'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Module::t('module', 'Notification System Settings'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Module::t('module', 'Update');
 ?>

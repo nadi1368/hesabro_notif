@@ -13,7 +13,7 @@ use yii\helpers\Html;
 
 
 /**
- * this behavior add to model when taget model implements NotificationInterface
+ * this behavior add to model when target model implements NotificationInterface
  */
 class NotifBehavior extends Behavior
 {

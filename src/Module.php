@@ -24,6 +24,8 @@ class Module extends BaseModule
 
     public ?string $email = null;
 
+    public ?string $ticket = null;
+
     public ?string $clientComponent = null;
 
     public array $events = [];
@@ -32,12 +34,16 @@ class Module extends BaseModule
     {
         parent::init();
 
-        if (!($this->sms instanceof Notify)) {
+        if (!is_string($this->sms) || !((new $this->sms()) instanceof Notify)) {
             throw new Exception('sms attribute in Notif module listener must be instance of Notify', 500);
         }
 
-        if (!($this->email instanceof Notify)) {
+        if (!is_string($this->email) || !((new $this->email()) instanceof Notify)) {
             throw new Exception('email attribute in Notif module, must be instance of Notify', 500);
+        }
+
+        if (!is_string($this->ticket) || !((new $this->ticket()) instanceof Notify)) {
+            throw new Exception('ticket attribute in Notif module, must be instance of Notify', 500);
         }
     }
 

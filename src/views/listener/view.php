@@ -9,7 +9,7 @@ use yii\widgets\DetailView;
 /* @var NotifListener $model */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => Module::t('module', 'Notification System'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Module::t('module', 'Notification System Settings'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="comments-type-view card">

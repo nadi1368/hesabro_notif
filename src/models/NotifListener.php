@@ -28,6 +28,7 @@ use yii2tech\ar\softdelete\SoftDeleteBehavior;
  * @property-read object $createdBy
  * @property-read object $updatedBy
  * @property-read string $usersList
+ * @property-read string $usersModel
  */
 class NotifListener extends ActiveRecord
 {
@@ -43,13 +44,15 @@ class NotifListener extends ActiveRecord
 
     public bool $email = false;
 
-    public string $userType = self::USER_DYNAMIC;
+    public bool $ticket = false;
 
-    public array $user = [];
+    public ?string $userType = null;
+
+    public mixed $users = [];
 
     public static function tableName(): string
     {
-        return '{{notif_listeners}}';
+        return '{{%notif_listeners}}';
     }
 
     public function behaviors()
@@ -67,7 +70,7 @@ class NotifListener extends ActiveRecord
             'TimestampBehavior' => [
                 'class' => TimestampBehavior::class,
                 'createdAtAttribute' => 'created_at',
-                'updatedAtAttribute' => 'changed_at'
+                'updatedAtAttribute' => 'updated_at'
             ],
             'BlameableBehavior' => [
                 'class' => BlameableBehavior::class,
@@ -79,17 +82,22 @@ class NotifListener extends ActiveRecord
                 'softDeleteAttributeValues' => [
                     'deleted_at' => time(),
                 ],
+                'restoreAttributeValues' => [
+                    'deleted_at' => null,
+                ],
                 'replaceRegularDelete' => true,
+                'invokeDeleteEvents' => false
             ],
             'JsonAdditional' => [
                 'class' => JsonAdditional::class,
                 'ownerClassName' => self::class,
                 'fieldAdditional' => 'additional_data',
                 'AdditionalDataProperty' => [
+                    'userType' => 'String',
+                    'users' => 'IntegerArray',
                     'sms' => 'Boolean',
                     'email' => 'Boolean',
-                    'userType' => 'String',
-                    'users' => 'IntegerArray'
+                    'ticket' => 'Boolean'
                 ],
             ],
         ]);
@@ -97,7 +105,7 @@ class NotifListener extends ActiveRecord
 
     public function beforeValidate()
     {
-        if ($this->userType === self::USER_STATIC) {
+        if ($this->userType === self::USER_DYNAMIC) {
             $this->users = [];
         }
 
@@ -106,7 +114,7 @@ class NotifListener extends ActiveRecord
 
     public function rules()
     {
-        $userDynamicType = self::USER_DYNAMIC;
+        $userStaticType = self::USER_STATIC;
         return array_merge(parent::rules(), [
             [['title', 'event', 'userType'], 'required'],
             [['title', 'event', 'description'], 'string'],
@@ -115,23 +123,41 @@ class NotifListener extends ActiveRecord
             [
                 'users',
                 'required',
-                'when' => fn(self $model) => $model->userType === self::USER_DYNAMIC,
-                'whenClient' => "function() { return $('input[name=\"NotifListener[userType]\"]:checked').val() === '$userDynamicType' }"
+                'when' => fn(self $model) => $model->userType === self::USER_STATIC,
+                'whenClient' => "function() { return $('input[name=\"NotifListener[userType]\"]:checked').val() === '$userStaticType' }"
             ]
         ]);
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'title' => Module::t('module', 'Title'),
+            'event' => Module::t('module', 'Event'),
+            'description' => Module::t('module', 'Description'),
+            'userType' => Module::t('module', 'User Type'),
+            'users' => Module::t('module', 'Users'),
+            'sms' => Module::t('module', 'SMS'),
+            'email' => Module::t('module', 'Email'),
+            'ticket' => Module::t('module', 'Ticket'),
+            'created_at' => Module::t('module', 'Created At'),
+            'updated_at' => Module::t('module', 'Updated At'),
+            'created_by' => Module::t('module', 'Created By'),
+            'updated_by' => Module::t('module', 'Updated By'),
+        ];
     }
 
     public function scenarios()
     {
         return [
-            self::SCENARIO_CREATE => ['title', 'event', 'description', 'userType', 'users', 'sms', 'email'],
-            self::SCENARIO_UPDATE => ['title', 'event', 'description', 'userType', 'users', 'sms', 'email'],
+            self::SCENARIO_CREATE => ['title', 'event', 'description', 'userType', 'users', 'sms', 'email', 'ticket'],
+            self::SCENARIO_UPDATE => ['title', 'event', 'description', 'userType', 'users', 'sms', 'email', 'ticket'],
         ];
     }
 
     public static function find()
     {
-        return new NotifListenerQuery(get_called_class());
+        return (new NotifListenerQuery(get_called_class()))->notDeleted();
     }
 
     public function getCreatedBy(): ActiveQuery
@@ -158,8 +184,8 @@ class NotifListener extends ActiveRecord
     {
         $items = [
             'UserType' => [
-                self::USER_DYNAMIC => 'کاربر دلخواه',
-                self::USER_STATIC => 'کاربر رخداد'
+                self::USER_DYNAMIC => Module::t('module', 'Event User'),
+                self::USER_STATIC => Module::t('module', 'Select User')
             ],
             'Events' => Module::getInstance()->events
         ];
@@ -167,10 +193,34 @@ class NotifListener extends ActiveRecord
         return isset($code) ? ($items[$type][$code] ?? false) : ($items[$type] ?? false);
     }
 
+    public function getUsersModel(): ActiveQuery
+    {
+        return $this->hasMany(Module::getInstance()->user, ['id' => 'users']);
+    }
+
     public function getUsersList(): string
     {
         $users = Module::getInstance()->user::find()->where(['id' => is_array($this->users) ? $this->users : [$this->users]])->all();
 
         return implode('', array_map(fn($user) => '<label class="badge badge-info mr-2 mb-2">' . $user->fullName . ' (' . $user->email . ')' . '</label>', $users));
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert && $this->userType === self::USER_STATIC) {
+            foreach (($this->users ?: []) as $user) {
+                $event = NotifSetting::findUserEvent($user, $this->event);
+
+                if (!$event) {
+                    NotifSetting::updateUserEvent($user, $this->event, [
+                        'sms' => $this->sms,
+                        'email' => $this->email,
+                        'ticket' => $this->ticket,
+                    ]);
+                }
+            }
+        }
+
+        parent::afterSave($insert, $changedAttributes);
     }
 }
