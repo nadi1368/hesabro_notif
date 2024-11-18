@@ -2,11 +2,14 @@
 
 namespace hesabro\notif\models;
 
+use hesabro\helpers\traits\ModelHelper;
 use hesabro\notif\Module;
 use yii\base\Model;
 
 class NotifSettingItem extends Model
 {
+    use ModelHelper;
+
     public ?string $event = null;
 
     public bool $sms = true;
@@ -19,7 +22,7 @@ class NotifSettingItem extends Model
     {
         return [
             [['event','sms','email','ticket'], 'required'],
-            ['event', 'in', 'range' => Module::getInstance()->events],
+            ['event', 'in', 'range' => array_keys(Module::getInstance()->events)],
             [['sms', 'email', 'ticket'], 'boolean']
         ];
     }

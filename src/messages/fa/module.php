@@ -32,4 +32,7 @@ return [
     'Updated By' => 'ویرایش شده توسط',
     'Log' => 'تاریخچه تغییرات',
     'Settings' => 'تنظیمات',
+    'Unknown' => 'نامشخص',
+    'Notifications' => 'اعلان‌ها',
+    'Notification' => 'اعلان‌'
 ];

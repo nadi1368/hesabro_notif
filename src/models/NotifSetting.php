@@ -20,6 +20,12 @@ use yii\db\ActiveRecord;
  */
 class NotifSetting extends ActiveRecord
 {
+    const TYPE_SMS = 'sms';
+
+    const TYPE_EMAIL = 'email';
+
+    const TYPE_TICKET = 'ticket';
+
     public mixed $settings = [];
 
     public static function tableName()
@@ -64,8 +70,6 @@ class NotifSetting extends ActiveRecord
     {
         return [
             'user_id' => Module::t('module', 'User'),
-            'sms' => Module::t('module', 'Sms'),
-            'email' => Module::t('module', 'Email'),
         ];
     }
 
@@ -112,5 +116,40 @@ class NotifSetting extends ActiveRecord
         $setting->settings = $setting->settings ?: [];
 
         return current(array_filter($setting->settings, fn(NotifSettingItem $item) => $item->event === $event)) ?: null;
+    }
+
+    public static function canUserEvent(
+        int|string $userId,
+        string $event,
+        string $type,
+        bool $default = false
+    ) : bool
+    {
+        /** @var NotifSettingItem|null $setting */
+        $setting = self::findUserEvent($userId, $event);
+
+        if (!$setting) {
+            return $default;
+        }
+
+        return $setting[$type];
+    }
+
+    public function loadDefaultValues($skipIfSet = true)
+    {
+        parent::loadDefaultValues($skipIfSet);
+
+        $eventKeys = array_keys(Module::getInstance()->events);
+        $defaultSettings = array_combine($eventKeys, array_map(fn($event) => new NotifSettingItem([
+            'event' => $event,
+            'sms' => false,
+            'email' => false,
+            'ticket' => false,
+        ]), $eventKeys));
+
+        $existenceSettings = array_combine(array_map(fn($item) => $item->event, $this->settings), $this->settings);
+        $this->settings = array_values(array_merge($defaultSettings, $existenceSettings));
+
+        return $this;
     }
 }

@@ -20,6 +20,8 @@ use yii\mongodb\ActiveRecord;
  * @property int $send_sms_delay
  * @property int $send_email
  * @property int $send_email_delay
+ * @property int $send_ticket
+ * @property int $send_ticket_delay
  * @property int $created_by
  * @property int $created_at
  *
@@ -35,11 +37,20 @@ class Notif extends ActiveRecord
         return '{{%notifs}}';
     }
 
+    public function attributes()
+    {
+        return [
+            'title', 'description', 'seen',
+            'send_sms', 'send_sms_delay', 'send_email', 'send_email_delay', 'send_ticket', 'send_ticket_delay',
+            'user_id', 'created_at', 'created_by', 'slave_id'
+        ];
+    }
+
     public function rules()
     {
         return [
-            [['send_sms', 'send_sms_delay', 'send_email', 'send_email_delay'], 'default', 'value' => 0],
-            [['user_id', 'send_sms', 'send_sms_delay', 'send_email', 'created_at', 'created_by', 'slave_id'], 'integer'],
+            [['send_sms', 'send_sms_delay', 'send_email', 'send_email_delay', 'send_ticket', 'send_ticket_delay'], 'default', 'value' => 0],
+            [['user_id', 'send_sms', 'send_sms_delay', 'send_email', 'send_email_delay', 'send_ticket', 'send_ticket_delay', 'created_at', 'created_by', 'slave_id'], 'integer'],
             [['title', 'description'], 'string'],
             [['seen'], 'boolean'],
             [['seen'], 'default', 'value' => false],
@@ -56,7 +67,11 @@ class Notif extends ActiveRecord
             'description' => 'توضیحات',
             'create_by' => 'تغییر توسط',
             'send_sms' => 'ارسال پیامک',
+            'send_sms_delay' => 'تاخیر در ارسال پیامک',
             'send_email' => 'ارسال ایمیل',
+            'send_email_delay' => 'تاخیر در ارسال ایمیل',
+            'send_ticket' => 'ارسال تیکت',
+            'send_ticket_delay' => 'تاخیر در ارسال تیکت',
         ];
     }
 
@@ -82,9 +97,9 @@ class Notif extends ActiveRecord
 
     public function sendSms(): void
     {
-        if ($this->user) {
+        if (Module::getInstance()->sms && $this->send_sms && $this->user) {
             Module::getInstance()->sms::send(
-                $this->user->username,
+                $this->user,
                 $this->title,
                 Module::getInstance()->websiteName . PHP_EOL . strip_tags($this->description),
                 $this->send_sms_delay
@@ -94,12 +109,24 @@ class Notif extends ActiveRecord
 
     public function sendEmail(): void
     {
-        if ($this->user && $this->user->email) {
+        if (Module::getInstance()->email  && $this->send_email && $this->user) {
             Module::getInstance()->email::send(
-                [$this->user->email],
+                $this->user,
                 $this->title,
                 $this->description,
                 $this->send_email_delay
+            );
+        }
+    }
+
+    public function sendTicket(): void
+    {
+        if (Module::getInstance()->ticket && $this->send_ticket && $this->user) {
+            Module::getInstance()->ticket::send(
+                $this->user,
+                $this->title,
+                $this->description,
+                $this->send_ticket_delay
             );
         }
     }
@@ -116,13 +143,9 @@ class Notif extends ActiveRecord
     {
         parent::afterSave($insert, $changedAttributes);
 
-        if ($this->send_sms) {
-            $this->sendSms();
-        }
-
-        if ($this->send_email) {
-            $this->sendEmail();
-        }
+        $this->sendSms();
+        $this->sendEmail();
+        $this->sendTicket();
 
         $this->trigger(self::EVENT_AFTER_INSERT_NOTIF, new class(['notif' => $this]) extends Event {
             public $notif = null;
@@ -132,11 +155,18 @@ class Notif extends ActiveRecord
     /**
      * @return Notif[]
      */
-    public static function my(): array
+    public static function myUnseen(): array
     {
         return self::find()
             ->own()
             ->unseen()
+            ->all();
+    }
+
+    public static function myAll(): array
+    {
+        return self::find()
+            ->own()
             ->all();
     }
 }

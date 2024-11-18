@@ -34,15 +34,15 @@ class Module extends BaseModule
     {
         parent::init();
 
-        if (!is_string($this->sms) || !((new $this->sms()) instanceof Notify)) {
+        if ($this->sms && (!is_string($this->sms) || !((new $this->sms()) instanceof Notify))) {
             throw new Exception('sms attribute in Notif module listener must be instance of Notify', 500);
         }
 
-        if (!is_string($this->email) || !((new $this->email()) instanceof Notify)) {
+        if ($this->email && (!is_string($this->email) || !((new $this->email()) instanceof Notify))) {
             throw new Exception('email attribute in Notif module, must be instance of Notify', 500);
         }
 
-        if (!is_string($this->ticket) || !((new $this->ticket()) instanceof Notify)) {
+        if ($this->ticket && (!is_string($this->ticket) || !((new $this->ticket()) instanceof Notify))) {
             throw new Exception('ticket attribute in Notif module, must be instance of Notify', 500);
         }
     }
