@@ -2,9 +2,9 @@
 
 return [
     'Error In Save Info' => 'خطا در ذخیره اطلاعات',
-    'Item Created Successfully' => 'ایجاد با موفقیت انجام شد.',
-    'Item Updated Successfully' => 'ویرایش با موفقیت انجام شد.',
-    'Item Deleted Successfully' => 'حذف با موفقیت انجام شد.',
+    'Item Created Successfully' => 'ایجاد باموفقیت انجام شد.',
+    'Item Updated Successfully' => 'ویرایش باموفقیت انجام شد.',
+    'Item Deleted Successfully' => 'حذف باموفقیت انجام شد.',
     'It is not possible to perform this operation' => 'امکان انجام این عملیات وجود ندارد.',
     'The requested item does not exist.' => 'مورد موردنظر یافت نشد.',
     'Description' => 'توضیحات',

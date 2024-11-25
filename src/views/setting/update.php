@@ -39,10 +39,10 @@ $form = ActiveForm::begin(['id' => 'user-notif-settings'])
                     <hr/>
                 </div>
             <?php endforeach; ?>
-            <div class="col-12 mt-4">
-                <?= Html::submitButton(Module::t('module', 'Update'), ['class' => 'btn btn-success']) ?>
-            </div>
         </div>
+    </div>
+    <div class="card-footer">
+        <?= Html::submitButton(Module::t('module', 'Update'), ['class' => 'btn btn-success']) ?>
     </div>
 </div>
 <?php ActiveForm::end(); ?>

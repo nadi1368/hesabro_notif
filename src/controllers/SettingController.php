@@ -37,13 +37,16 @@ class SettingController extends Controller
             $valid = NotifSettingItem::validateMultiple($model->settings);
             if ($valid) {
                 $model->save(false);
-                Yii::$app->getSession()->setFlash('success', Module::t('module', 'Item Updated Successfully'));
+                return $this->asJson([
+                    'success' => true,
+                    'msg' => Module::t('module', 'Item Updated Successfully')
+                ]);
             }
         } else {
             $model->loadDefaultValues();
         }
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model
         ]);
     }

@@ -15,6 +15,8 @@ use yii\mongodb\ActiveRecord;
  * @property int $user_id
  * @property string $title
  * @property string $description
+ * @property string $model_class
+ * @property int|null $model_id
  * @property int $slave_id
  * @property int $send_sms
  * @property int $send_sms_delay
@@ -40,7 +42,7 @@ class Notif extends ActiveRecord
     public function attributes()
     {
         return [
-            'title', 'description', 'seen',
+            'title', 'description', 'seen', 'model_class', 'model_id',
             'send_sms', 'send_sms_delay', 'send_email', 'send_email_delay', 'send_ticket', 'send_ticket_delay',
             'user_id', 'created_at', 'created_by', 'slave_id'
         ];
@@ -49,12 +51,13 @@ class Notif extends ActiveRecord
     public function rules()
     {
         return [
+            [['user_id', 'model_class'], 'required'],
             [['send_sms', 'send_sms_delay', 'send_email', 'send_email_delay', 'send_ticket', 'send_ticket_delay'], 'default', 'value' => 0],
-            [['user_id', 'send_sms', 'send_sms_delay', 'send_email', 'send_email_delay', 'send_ticket', 'send_ticket_delay', 'created_at', 'created_by', 'slave_id'], 'integer'],
-            [['title', 'description'], 'string'],
+            [['user_id', 'send_sms', 'send_sms_delay', 'send_email', 'send_email_delay', 'send_ticket', 'send_ticket_delay', 'model_id', 'created_at', 'created_by', 'slave_id'], 'number'],
+            [['title', 'description', 'model_class'], 'string'],
             [['seen'], 'boolean'],
             [['seen'], 'default', 'value' => false],
-            ['user_id', 'exist', 'targetClass' => Module::getInstance()->user, 'targetAttribute' => ['user_id' => 'id']]
+            ['user_id', 'exist', 'targetClass' => Module::getInstance()->user, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -72,6 +75,8 @@ class Notif extends ActiveRecord
             'send_email_delay' => 'تاخیر در ارسال ایمیل',
             'send_ticket' => 'ارسال تیکت',
             'send_ticket_delay' => 'تاخیر در ارسال تیکت',
+            'model_class' => 'نام مدل',
+            'model_id' => 'شناسه مدل',
         ];
     }
 
@@ -102,7 +107,9 @@ class Notif extends ActiveRecord
                 $this->user,
                 $this->title,
                 Module::getInstance()->websiteName . PHP_EOL . strip_tags($this->description),
-                $this->send_sms_delay
+                $this->send_sms_delay,
+                $this->model_class,
+                $this->model_id
             );
         }
     }
@@ -114,7 +121,9 @@ class Notif extends ActiveRecord
                 $this->user,
                 $this->title,
                 $this->description,
-                $this->send_email_delay
+                $this->send_email_delay,
+                $this->model_class,
+                $this->model_id
             );
         }
     }
@@ -126,7 +135,9 @@ class Notif extends ActiveRecord
                 $this->user,
                 $this->title,
                 $this->description,
-                $this->send_ticket_delay
+                $this->send_ticket_delay,
+                $this->model_class,
+                $this->model_id
             );
         }
     }
