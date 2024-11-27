@@ -33,9 +33,7 @@ class NotifBehavior extends Behavior
     {
         parent::init();
 
-        if (!($this->owner instanceof NotifInterface)) {
-            throw new Exception($this->owner::class . ' must be instance of ' . NotifInterface::class);
-        }
+        Yii::$app->getModule('notif');
     }
 
     public function events(): array
@@ -82,6 +80,8 @@ class NotifBehavior extends Behavior
                     'create_by' => Yii::$app->user->id,
                     'slave_id' => Module::getInstance()->getClientId(),
                 ]);
+
+                dd($notif->save());
 
                 if (!$notif->save()) {
                     Yii::error(Html::errorSummary($notif), 'Notif');
