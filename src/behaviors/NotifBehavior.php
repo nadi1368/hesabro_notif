@@ -28,14 +28,6 @@ class NotifBehavior extends Behavior
 
     public ?string $event = null;
 
-
-    public function init()
-    {
-        parent::init();
-
-        Yii::$app->getModule('notif');
-    }
-
     public function events(): array
     {
         return [
@@ -46,7 +38,11 @@ class NotifBehavior extends Behavior
 
     public function sendNotif(): void
     {
-        if (!Module::getInstance()->enable || !$this->owner->notifConditionToSend()) {
+        if (
+            !Module::getInstance()->enable ||
+            !$this->owner->notifConditionToSend() ||
+            (count($this->scenario) && !in_array($this->owner->getScenario(), $this->scenario))
+        ) {
             return;
         }
 
@@ -67,7 +63,8 @@ class NotifBehavior extends Behavior
 
             foreach ($users as $user) {
                 $notif = new Notif([
-                    'time' => time(),
+                    'model_class' => $this->owner::class,
+                    'model_id' => $this->owner->getPrimaryKey(),
                     'title' => $title,
                     'user_id' => $user,
                     'description' => $description,
@@ -77,11 +74,8 @@ class NotifBehavior extends Behavior
                     'send_email_delay' => $emailDelay,
                     'send_ticket' => $ownerTicketCondition && NotifSetting::canUserEvent($user, $listener->event, NotifSetting::TYPE_TICKET, $listener->ticket),
                     'send_ticket_delay' => $ticketDelay,
-                    'create_by' => Yii::$app->user->id,
                     'slave_id' => Module::getInstance()->getClientId(),
                 ]);
-
-                dd($notif->save());
 
                 if (!$notif->save()) {
                     Yii::error(Html::errorSummary($notif), 'Notif');
