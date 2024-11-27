@@ -18,11 +18,11 @@ use yii\mongodb\ActiveRecord;
  * @property string $model_class
  * @property int|null $model_id
  * @property int $slave_id
- * @property int $send_sms
+ * @property boolean $send_sms
  * @property int $send_sms_delay
- * @property int $send_email
+ * @property boolean $send_email
  * @property int $send_email_delay
- * @property int $send_ticket
+ * @property boolean $send_ticket
  * @property int $send_ticket_delay
  * @property int $created_by
  * @property int $created_at
@@ -36,13 +36,13 @@ class Notif extends ActiveRecord
 
     public static function collectionName(): string
     {
-        return '{{%notifs}}';
+        return 'notif';
     }
 
     public function attributes()
     {
         return [
-            'title', 'description', 'seen', 'model_class', 'model_id',
+            '_id', 'title', 'description', 'seen', 'model_class', 'model_id',
             'send_sms', 'send_sms_delay', 'send_email', 'send_email_delay', 'send_ticket', 'send_ticket_delay',
             'user_id', 'created_at', 'created_by', 'slave_id'
         ];
@@ -52,8 +52,10 @@ class Notif extends ActiveRecord
     {
         return [
             [['user_id', 'model_class'], 'required'],
-            [['send_sms', 'send_sms_delay', 'send_email', 'send_email_delay', 'send_ticket', 'send_ticket_delay'], 'default', 'value' => 0],
-            [['user_id', 'send_sms', 'send_sms_delay', 'send_email', 'send_email_delay', 'send_ticket', 'send_ticket_delay', 'model_id', 'created_at', 'created_by', 'slave_id'], 'number'],
+            [['user_id', 'send_sms_delay', 'send_email_delay', 'send_ticket_delay', 'model_id', 'created_at', 'created_by', 'slave_id'], 'number'],
+            [['send_sms', 'send_email', 'send_ticket'], 'boolean'],
+            [['send_sms', 'send_email', 'send_ticket'], 'default', 'value' => false],
+            [['send_sms_delay', 'send_email_delay', 'send_ticket_delay'], 'default', 'value' => 0],
             [['title', 'description', 'model_class'], 'string'],
             [['seen'], 'boolean'],
             [['seen'], 'default', 'value' => false],
