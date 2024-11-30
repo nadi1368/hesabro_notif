@@ -43,7 +43,7 @@ class NotifListenerQuery extends ActiveQuery
             [
                 'AND',
                 "JSON_EXTRACT(". NotifListener::tableName() .".additional_data, '$.userType') = '$static'",
-                "JSON_CONTAINS(". NotifListener::tableName() .".additional_data, JSON_QUOTE('$userId'), '$.users') = 1"
+                "JSON_CONTAINS(". NotifListener::tableName() .".additional_data, \"$userId\", '$.users') = 1"
             ]
         ]);
 
