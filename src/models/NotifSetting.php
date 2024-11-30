@@ -6,6 +6,7 @@ use hesabro\changelog\behaviors\LogBehavior;
 use hesabro\errorlog\behaviors\TraceBehavior;
 use hesabro\helpers\behaviors\JsonAdditional;
 use hesabro\notif\Module;
+use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -135,21 +136,27 @@ class NotifSetting extends ActiveRecord
         return $setting[$type];
     }
 
-    public function loadDefaultValues($skipIfSet = true)
+    public static function getRelatedSettings(?string $group = null)
     {
-        parent::loadDefaultValues($skipIfSet);
+        $user = Yii::$app->user->getId();
+        $group = !$group || str_starts_with($group, 'app') ? 'global' : $group;
+        $moduleEvents = array_keys(Module::getInstance()->getEventsByGroup($group));
 
-        $eventKeys = array_keys(Module::getInstance()->events);
-        $defaultSettings = array_combine($eventKeys, array_map(fn($event) => new NotifSettingItem([
-            'event' => $event,
-            'sms' => false,
-            'email' => false,
-            'ticket' => false,
-        ]), $eventKeys));
+        $listeners = NotifListener::find()->whereUserInclude($user)->all();
+        $eventKeys = array_map(fn(NotifListener $notifListener) => $notifListener->event, $listeners);
+        $eventKeys = array_filter($eventKeys, fn($item) => in_array($item, $moduleEvents));
+        $userSetting = NotifSetting::find()->whereUser($user)->one();
 
-        $existenceSettings = array_combine(array_map(fn($item) => $item->event, $this->settings), $this->settings);
-        $this->settings = array_values(array_merge($defaultSettings, $existenceSettings));
-
-        return $this;
+        return array_combine($eventKeys, array_map(function($event) use ($userSetting) {
+            if ($existenceSetting = current(array_filter($userSetting->settings, fn(NotifSettingItem $item) => $item->event === $event))) {
+                return $existenceSetting;
+            }
+            return new NotifSettingItem([
+                'event' => $event,
+                'sms' => false,
+                'email' => false,
+                'ticket' => false,
+            ]);
+        }, $eventKeys));
     }
 }

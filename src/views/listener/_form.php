@@ -22,7 +22,7 @@ $model->userType = $model->userType ?: NotifListener::USER_DYNAMIC;
                 <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
             </div>
             <div class="col-md-6">
-                <?= $form->field($model, 'event')->dropDownList(Module::getInstance()->events, ['prompt' => Module::t('module', 'Select')]) ?>
+                <?= $form->field($model, 'event')->dropDownList(Module::getInstance()->eventsAll, ['prompt' => Module::t('module', 'Select')]) ?>
             </div>
             <div class="col-md-12">
                 <?= $form->field($model, 'description')->textarea(['rows' => 3]) ?>

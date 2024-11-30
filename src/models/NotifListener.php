@@ -187,7 +187,7 @@ class NotifListener extends ActiveRecord
                 self::USER_DYNAMIC => Module::t('module', 'Event User'),
                 self::USER_STATIC => Module::t('module', 'Select User')
             ],
-            'Events' => Module::getInstance()->events
+            'Events' => Module::getInstance()->eventsAll
         ];
 
         return isset($code) ? ($items[$type][$code] ?? false) : ($items[$type] ?? false);

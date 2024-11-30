@@ -19,7 +19,7 @@ use yii\helpers\Url;
             <?= $form->field($model, 'title') ?>
         </div>
         <div class="col-3">
-            <?= $form->field($model, 'event')->dropDownList(Module::getInstance()->events, ['prompt' => Module::t('module', 'Select')]) ?>
+            <?= $form->field($model, 'event')->dropDownList(Module::getInstance()->eventsAll, ['prompt' => Module::t('module', 'Select')]) ?>
         </div>
         <div class="col-3">
             <?= $form->field($model, 'userType')->dropDownList(NotifListener::itemAlias('UserType'), ['prompt' => Module::t('module', 'Select')]) ?>

@@ -8,6 +8,7 @@ use yii\helpers\Html;
 
 /**
  * @var NotifSetting $model
+ * @var array $events
  */
 
 $this->title = Module::t('module', 'Notification System Settings');
@@ -15,15 +16,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $form = ActiveForm::begin(['id' => 'user-notif-settings'])
 ?>
-<div class="card">
+<div class="card mb-0">
     <div class="card-body">
         <div class="row" style="max-width: 800px; margin: auto">
-            <?php /** @var NotifSettingItem $setting */ ?>
-            <?php foreach ($model->settings as $key => $setting): ?>
+            <?php if (count($events)): ?>
+            <?php /** @var NotifSettingItem $event */ ?>
+            <?php foreach ($events as $key => $setting): ?>
                 <div class="col-12 py-2">
                     <div class="row">
                         <div class="col-6">
-                            <?= Module::getInstance()->events[$setting->event] ?? Module::t('module', 'Unknown') ?>
+                            <?= Module::getInstance()->eventsAll[$setting->event] ?? Module::t('module', 'Unknown') ?>
                             <?= $form->field($setting, "[$key]event")->hiddenInput(['value' => $setting->event])->label(false) ?>
                         </div>
                         <div class="col-2">
@@ -39,10 +41,15 @@ $form = ActiveForm::begin(['id' => 'user-notif-settings'])
                     <hr/>
                 </div>
             <?php endforeach; ?>
+                <div class="col-12">
+                    <?= Html::submitButton(Module::t('module', 'Update'), ['class' => 'btn btn-success']) ?>
+                </div>
+            <?php else: ?>
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                موردی برای این ماژول یافت نشد.
+            </div>
+            <?php endif; ?>
         </div>
-    </div>
-    <div class="card-footer">
-        <?= Html::submitButton(Module::t('module', 'Update'), ['class' => 'btn btn-success']) ?>
     </div>
 </div>
 <?php ActiveForm::end(); ?>
