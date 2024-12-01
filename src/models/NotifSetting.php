@@ -25,8 +25,6 @@ class NotifSetting extends ActiveRecord
 
     const TYPE_EMAIL = 'email';
 
-    const TYPE_TICKET = 'ticket';
-
     public mixed $settings = [];
 
     public static function tableName()
@@ -155,7 +153,6 @@ class NotifSetting extends ActiveRecord
                 'event' => $event,
                 'sms' => false,
                 'email' => false,
-                'ticket' => false,
             ]);
         }, $eventKeys));
     }

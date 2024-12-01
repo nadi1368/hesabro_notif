@@ -16,14 +16,12 @@ class NotifSettingItem extends Model
 
     public bool $email = true;
 
-    public bool $ticket = true;
-
     public function rules()
     {
         return [
-            [['event','sms','email','ticket'], 'required'],
+            [['event','sms','email'], 'required'],
             ['event', 'in', 'range' => Module::getInstance()->eventsKey],
-            [['sms', 'email', 'ticket'], 'boolean']
+            [['sms', 'email'], 'boolean']
         ];
     }
 
@@ -32,8 +30,7 @@ class NotifSettingItem extends Model
         return [
             'event' => Module::t('module', 'Event'),
             'sms' => Module::t('module', 'SMS'),
-            'email' => Module::t('module', 'Email'),
-            'ticket' => Module::t('module', 'Ticket'),
+            'email' => Module::t('module', 'Email')
         ];
     }
 }

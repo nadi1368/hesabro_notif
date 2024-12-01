@@ -28,14 +28,11 @@ $form = ActiveForm::begin(['id' => 'user-notif-settings'])
                             <?= Module::getInstance()->eventsAll[$setting->event] ?? Module::t('module', 'Unknown') ?>
                             <?= $form->field($setting, "[$key]event")->hiddenInput(['value' => $setting->event])->label(false) ?>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <?= $form->field($setting, "[$key]sms")->checkbox() ?>
                         </div>
-                        <div class="col-2">
+                        <div class="col-3">
                             <?= $form->field($setting, "[$key]email")->checkbox() ?>
-                        </div>
-                        <div class="col-2">
-                            <?= $form->field($setting, "[$key]ticket")->checkbox() ?>
                         </div>
                     </div>
                     <hr/>

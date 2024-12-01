@@ -44,8 +44,6 @@ class NotifListener extends ActiveRecord
 
     public bool $email = false;
 
-    public bool $ticket = false;
-
     public ?string $userType = null;
 
     public mixed $users = [];
@@ -97,7 +95,6 @@ class NotifListener extends ActiveRecord
                     'users' => 'IntegerArray',
                     'sms' => 'Boolean',
                     'email' => 'Boolean',
-                    'ticket' => 'Boolean'
                 ],
             ],
         ]);
@@ -139,7 +136,6 @@ class NotifListener extends ActiveRecord
             'users' => Module::t('module', 'Users'),
             'sms' => Module::t('module', 'SMS'),
             'email' => Module::t('module', 'Email'),
-            'ticket' => Module::t('module', 'Ticket'),
             'created_at' => Module::t('module', 'Created At'),
             'updated_at' => Module::t('module', 'Updated At'),
             'created_by' => Module::t('module', 'Created By'),
@@ -150,8 +146,8 @@ class NotifListener extends ActiveRecord
     public function scenarios()
     {
         return [
-            self::SCENARIO_CREATE => ['title', 'event', 'description', 'userType', 'users', 'sms', 'email', 'ticket'],
-            self::SCENARIO_UPDATE => ['title', 'event', 'description', 'userType', 'users', 'sms', 'email', 'ticket'],
+            self::SCENARIO_CREATE => ['title', 'event', 'description', 'userType', 'users', 'sms', 'email'],
+            self::SCENARIO_UPDATE => ['title', 'event', 'description', 'userType', 'users', 'sms', 'email'],
         ];
     }
 
@@ -215,7 +211,6 @@ class NotifListener extends ActiveRecord
                     NotifSetting::updateUserEvent($user, $this->event, [
                         'sms' => $this->sms,
                         'email' => $this->email,
-                        'ticket' => $this->ticket,
                     ]);
                 }
             }

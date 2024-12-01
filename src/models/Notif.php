@@ -16,14 +16,13 @@ use yii\mongodb\ActiveRecord;
  * @property string $title
  * @property string $description
  * @property string $model_class
+ * @property string $event
  * @property int|null $model_id
  * @property int $slave_id
  * @property boolean $send_sms
  * @property int $send_sms_delay
  * @property boolean $send_email
  * @property int $send_email_delay
- * @property boolean $send_ticket
- * @property int $send_ticket_delay
  * @property int $created_by
  * @property int $created_at
  *
@@ -42,8 +41,8 @@ class Notif extends ActiveRecord
     public function attributes()
     {
         return [
-            '_id', 'title', 'description', 'seen', 'model_class', 'model_id',
-            'send_sms', 'send_sms_delay', 'send_email', 'send_email_delay', 'send_ticket', 'send_ticket_delay',
+            '_id', 'title', 'description', 'seen', 'model_class', 'model_id', 'event',
+            'send_sms', 'send_sms_delay', 'send_email', 'send_email_delay',
             'user_id', 'created_at', 'created_by', 'slave_id'
         ];
     }
@@ -52,33 +51,33 @@ class Notif extends ActiveRecord
     {
         return [
             [['user_id', 'model_class'], 'required'],
-            [['user_id', 'send_sms_delay', 'send_email_delay', 'send_ticket_delay', 'model_id', 'created_at', 'created_by', 'slave_id'], 'number'],
-            [['send_sms', 'send_email', 'send_ticket'], 'boolean'],
-            [['send_sms', 'send_email', 'send_ticket'], 'default', 'value' => false],
-            [['send_sms_delay', 'send_email_delay', 'send_ticket_delay'], 'default', 'value' => 0],
+            [['user_id', 'send_sms_delay', 'send_email_delay', 'model_id', 'created_at', 'created_by', 'slave_id'], 'number'],
+            [['send_sms', 'send_email'], 'boolean'],
+            [['send_sms', 'send_email'], 'default', 'value' => false],
+            [['send_sms_delay', 'send_email_delay'], 'default', 'value' => 0],
             [['title', 'description', 'model_class'], 'string'],
             [['seen'], 'boolean'],
             [['seen'], 'default', 'value' => false],
             ['user_id', 'exist', 'targetClass' => Module::getInstance()->user, 'targetAttribute' => ['user_id' => 'id']],
+            ['event', 'in', 'range' => array_keys(Module::getInstance()->eventsAll)],
         ];
     }
 
     public function attributeLabels(): array
     {
         return [
-            'user_id' => 'کاربر',
-            'time' => 'زمان',
-            'title' => 'عنوان',
-            'description' => 'توضیحات',
-            'create_by' => 'تغییر توسط',
-            'send_sms' => 'ارسال پیامک',
-            'send_sms_delay' => 'تاخیر در ارسال پیامک',
-            'send_email' => 'ارسال ایمیل',
-            'send_email_delay' => 'تاخیر در ارسال ایمیل',
-            'send_ticket' => 'ارسال تیکت',
-            'send_ticket_delay' => 'تاخیر در ارسال تیکت',
-            'model_class' => 'نام مدل',
-            'model_id' => 'شناسه مدل',
+            'user_id' => Module::t('module', 'User'),
+            'title' => Module::t('module', 'Title'),
+            'description' => Module::t('module', 'Text'),
+            'created_by' => Module::t('module', 'Created By'),
+            'send_sms' => Module::t('module', 'Send Sms'),
+            'send_sms_delay' => Module::t('module', 'Send Sms Delay'),
+            'send_email' => Module::t('module', 'Send Email'),
+            'send_email_delay' => Module::t('module', 'Send Email Delay'),
+            'model_class' => Module::t('module', 'Model Class'),
+            'model_id' => Module::t('module', 'Model Id'),
+            'created_at' => Module::t('module', 'Created At'),
+            'event' => Module::t('module', 'Event')
         ];
     }
 
@@ -130,20 +129,6 @@ class Notif extends ActiveRecord
         }
     }
 
-    public function sendTicket(): void
-    {
-        if (Module::getInstance()->ticket && $this->send_ticket && $this->user) {
-            Module::getInstance()->ticket::send(
-                $this->user,
-                $this->title,
-                $this->description,
-                $this->send_ticket_delay,
-                $this->model_class,
-                $this->model_id
-            );
-        }
-    }
-
     public function beforeSave($insert)
     {
         $this->created_by = Yii::$app->user?->id;
@@ -158,7 +143,6 @@ class Notif extends ActiveRecord
 
         $this->sendSms();
         $this->sendEmail();
-        $this->sendTicket();
 
         $this->trigger(self::EVENT_AFTER_INSERT_NOTIF, new class(['notif' => $this]) extends Event {
             public $notif = null;

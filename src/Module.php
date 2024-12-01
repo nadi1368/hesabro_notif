@@ -25,8 +25,6 @@ class Module extends BaseModule
 
     public ?string $email = null;
 
-    public ?string $ticket = null;
-
     public ?string $clientComponent = null;
 
     public array $events = [];
@@ -41,10 +39,6 @@ class Module extends BaseModule
 
         if ($this->email && (!is_string($this->email) || !((new $this->email()) instanceof Notify))) {
             throw new Exception('email attribute in Notif module, must be instance of Notify', 500);
-        }
-
-        if ($this->ticket && (!is_string($this->ticket) || !((new $this->ticket()) instanceof Notify))) {
-            throw new Exception('ticket attribute in Notif module, must be instance of Notify', 500);
         }
     }
 

@@ -31,9 +31,6 @@ $model->userType = $model->userType ?: NotifListener::USER_DYNAMIC;
                 <hr />
             </div>
             <div class="col-md-4">
-                <?= $form->field($model, 'ticket', ['options' => ['class' => 'mb-0']])->checkbox() ?>
-            </div>
-            <div class="col-md-4">
                 <?= $form->field($model, 'sms', ['options' => ['class' => 'mb-0']])->checkbox() ?>
             </div>
 

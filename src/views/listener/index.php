@@ -93,13 +93,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format' => 'raw'
                 ],
                 [
-                    'attribute' => 'ticket',
-                    'value' => function (NotifListener $model) {
-                        return Yii::$app->helper::itemAlias('CheckboxIcon',(int) $model->ticket);
-                    },
-                    'format' => 'raw'
-                ],
-                [
                     'class' => 'common\widgets\grid\ActionColumn',
                     'contentOptions' => ['style' => 'width:100px;text-align:left;'],
                     'template' => '{group}',

@@ -55,8 +55,6 @@ class NotifBehavior extends Behavior
         $smsDelay = $this->owner->notifSmsDelayToSend() ?: 0;
         $ownerEmailCondition = $this->owner->notifEmailConditionToSend();
         $emailDelay = $this->owner->notifEmailDelayToSend() ?: 0;
-        $ownerTicketCondition = $this->owner->notifTicketConditionToSend();
-        $ticketDelay = $this->owner->notifTicketDelayToSend() ?: 0;
 
         foreach ($listeners as $listener) {
             $users = $listener->userType === NotifListener::USER_DYNAMIC ? $this->owner->notifUsers() : $listener->users;
@@ -65,15 +63,14 @@ class NotifBehavior extends Behavior
                 $notif = new Notif([
                     'model_class' => $this->owner::class,
                     'model_id' => $this->owner->getPrimaryKey(),
-                    'title' => $title,
                     'user_id' => $user,
+                    'title' => $title,
                     'description' => $description,
+                    'event' => $listener->event,
                     'send_sms' => $ownerSmsCondition && NotifSetting::canUserEvent($user, $listener->event, NotifSetting::TYPE_SMS, $listener->sms),
                     'send_sms_delay' => $smsDelay,
                     'send_email' => $ownerEmailCondition && NotifSetting::canUserEvent($user, $listener->event, NotifSetting::TYPE_EMAIL, $listener->email),
                     'send_email_delay' => $emailDelay,
-                    'send_ticket' => $ownerTicketCondition && NotifSetting::canUserEvent($user, $listener->event, NotifSetting::TYPE_TICKET, $listener->ticket),
-                    'send_ticket_delay' => $ticketDelay,
                     'slave_id' => Module::getInstance()->getClientId(),
                 ]);
 

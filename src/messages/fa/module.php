@@ -34,5 +34,13 @@ return [
     'Settings' => 'تنظیمات',
     'Unknown' => 'نامشخص',
     'Notifications' => 'اعلان‌ها',
-    'Notification' => 'اعلان‌'
+    'Notification' => 'اعلان‌',
+    'Model Id' => 'شناسه مدل',
+    'Model Class' => 'نام مدل',
+    'Send Email Delay' => 'تاخیر در ارسال ایمیل',
+    'Send Email' => 'ارسال ایمیل',
+    'Send Sms Delay' => 'تاخیر در ارسال پیامک',
+    'Send Sms' => 'ارسال پیامک',
+    'Text' => 'متن',
+    'System' => 'سیستم'
 ];

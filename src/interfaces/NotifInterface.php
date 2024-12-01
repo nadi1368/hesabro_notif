@@ -20,8 +20,4 @@ interface NotifInterface
     public function notifEmailConditionToSend(): bool;
 
     public function notifEmailDelayToSend(): ?int;
-
-    public function notifTicketConditionToSend(): bool;
-
-    public function notifTicketDelayToSend(): ?int;
 }

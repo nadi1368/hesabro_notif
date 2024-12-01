@@ -15,7 +15,8 @@ class NotifSearch extends Notif
             ['user_id', 'integer'],
             ['title', 'string'],
             ['seen', 'boolean'],
-            ['user_id', 'exist', 'targetClass' => Module::getInstance()->user, 'targetAttribute' => ['user_id' => 'id']]
+            ['user_id', 'exist', 'targetClass' => Module::getInstance()->user, 'targetAttribute' => ['user_id' => 'id']],
+            ['event', 'in', 'range' => array_keys(Module::getInstance()->eventsAll)],
         ];
     }
 
@@ -41,6 +42,7 @@ class NotifSearch extends Notif
             'title' => $this->title,
             'user_id' => $this->user_id,
             'seen' => $this->seen,
+            'event' => $this->event
         ]);
 
         return $dataProvider;
@@ -63,6 +65,7 @@ class NotifSearch extends Notif
         $query->andFilterWhere([
             'title' => $this->title,
             'seen' => $this->seen,
+            'event' => $this->event
         ]);
 
         return $dataProvider;
