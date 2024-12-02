@@ -1,6 +1,6 @@
 <?php
 
-use hesabro\helpers\widgets\UserSelect2;
+use hesabro\notif\widgets\UserSelect2;
 use hesabro\notif\models\NotifListener;
 use hesabro\notif\Module;
 use yii\helpers\Html;

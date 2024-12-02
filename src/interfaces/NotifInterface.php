@@ -5,19 +5,21 @@ namespace hesabro\notif\interfaces;
 
 interface NotifInterface
 {
-    public function notifUsers(): array;
+    public function notifUsers(string $event): array;
 
-    public function notifTitle(): string;
+    public function notifTitle(string $event): string;
 
-    public function notifDescription(): ?string;
+    public function notifLink(string $event): ?string;
 
-    public function notifConditionToSend(): bool;
+    public function notifDescription(string $event): ?string;
 
-    public function notifSmsConditionToSend(): bool;
+    public function notifConditionToSend(string $event): bool;
 
-    public function notifSmsDelayToSend(): ?int;
+    public function notifSmsConditionToSend(string $event): bool;
 
-    public function notifEmailConditionToSend(): bool;
+    public function notifSmsDelayToSend(string $event): ?int;
 
-    public function notifEmailDelayToSend(): ?int;
+    public function notifEmailConditionToSend(string $event): bool;
+
+    public function notifEmailDelayToSend(string $event): ?int;
 }

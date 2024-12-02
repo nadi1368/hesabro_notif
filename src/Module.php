@@ -21,6 +21,8 @@ class Module extends BaseModule
 
     public ?string $user = null;
 
+    public array | null $userFindUrl = ['/user/get-user-list'];
+
     public ?string $sms = null;
 
     public ?string $email = null;

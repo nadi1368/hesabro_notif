@@ -40,7 +40,7 @@ class NotifBehavior extends Behavior
     {
         if (
             !Module::getInstance()->enable ||
-            !$this->owner->notifConditionToSend() ||
+            !$this->owner->notifConditionToSend($this->event) ||
             (count($this->scenario) && !in_array($this->owner->getScenario(), $this->scenario))
         ) {
             return;
@@ -49,15 +49,15 @@ class NotifBehavior extends Behavior
         /** @var NotifListener[] $listeners */
         $listeners = NotifListener::find()->where(['event' => $this->event])->all();
 
-        $title = $this->owner->notifTitle();
-        $description = $this->owner->notifDescription();
-        $ownerSmsCondition = $this->owner->notifSmsConditionToSend();
-        $smsDelay = $this->owner->notifSmsDelayToSend() ?: 0;
-        $ownerEmailCondition = $this->owner->notifEmailConditionToSend();
-        $emailDelay = $this->owner->notifEmailDelayToSend() ?: 0;
+        $title = $this->owner->notifTitle($this->event);
+        $description = $this->owner->notifDescription($this->event);
+        $ownerSmsCondition = $this->owner->notifSmsConditionToSend($this->event);
+        $smsDelay = $this->owner->notifSmsDelayToSend($this->event) ?: 0;
+        $ownerEmailCondition = $this->owner->notifEmailConditionToSend($this->event);
+        $emailDelay = $this->owner->notifEmailDelayToSend($this->event) ?: 0;
 
         foreach ($listeners as $listener) {
-            $users = $listener->userType === NotifListener::USER_DYNAMIC ? $this->owner->notifUsers() : $listener->users;
+            $users = $listener->userType === NotifListener::USER_DYNAMIC ? $this->owner->notifUsers($this->event) : $listener->users;
 
             foreach ($users as $user) {
                 $notif = new Notif([

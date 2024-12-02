@@ -19,7 +19,8 @@
         "hesabro/change-log": "*",
         "hesabro/error-log": "*",
         "yiisoft/yii2-bootstrap4": "^2.0",
-        "yii2tech/ar-softdelete": "*"
+        "yii2tech/ar-softdelete": "*",
+        "kartik-v/yii2-widget-select2": "^2.1.4"
     },
     "minimum-stability": "stable",
     "license": "BSD-3-Clause",
