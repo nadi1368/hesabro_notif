@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'Id' => 'شناسه',
     'Error In Save Info' => 'خطا در ذخیره اطلاعات',
     'Item Created Successfully' => 'ایجاد باموفقیت انجام شد.',
     'Item Updated Successfully' => 'ویرایش باموفقیت انجام شد.',
@@ -15,7 +16,7 @@ return [
     'Update' => 'ویرایش',
     'Delete' => 'حذف',
     'Notification System' => 'سیستم اطلاع‌رسانی',
-    'Notification System Settings' => 'تنظیمات سیستم اطلاع‌رسانی',
+    'Notification System Settings' => 'تنظیمات اطلاع‌رسانی',
     'User' => 'کاربر',
     'Event' => 'رخداد',
     'SMS' => 'پیامک',

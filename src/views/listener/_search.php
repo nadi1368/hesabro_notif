@@ -5,11 +5,11 @@ use hesabro\notif\models\NotifListenerSearch;
 use hesabro\notif\Module;
 use yii\helpers\Html;
 use yii\bootstrap4\ActiveForm;
-use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model NotifListenerSearch */
 /* @var ActiveForm $form */
+/* @var array $events */
 ?>
 
 <?php $form = ActiveForm::begin(['action' => ['index'], 'method' => 'get']); ?>
@@ -19,7 +19,7 @@ use yii\helpers\Url;
             <?= $form->field($model, 'title') ?>
         </div>
         <div class="col-3">
-            <?= $form->field($model, 'event')->dropDownList(Module::getInstance()->eventsAll, ['prompt' => Module::t('module', 'Select')]) ?>
+            <?= $form->field($model, 'event')->dropDownList($events, ['prompt' => Module::t('module', 'Select')]) ?>
         </div>
         <div class="col-3">
             <?= $form->field($model, 'userType')->dropDownList(NotifListener::itemAlias('UserType'), ['prompt' => Module::t('module', 'Select')]) ?>

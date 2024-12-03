@@ -8,15 +8,11 @@ use hesabro\notif\models\NotifListener;
 use hesabro\notif\models\NotifListenerSearch;
 use hesabro\notif\Module;
 use Yii;
-use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
-/**
- * CommentsTypeController implements the CRUD actions for CommentsType model.
- */
 class ListenerController extends Controller
 {
     use AjaxValidationTrait;
@@ -56,11 +52,12 @@ class ListenerController extends Controller
     public function actionIndex()
     {
         $searchModel = new NotifListenerSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->group);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'events' => $this->events
         ]);
     }
 
@@ -73,7 +70,10 @@ class ListenerController extends Controller
 
     public function actionCreate()
     {
-        $model = new NotifListener(['scenario' => NotifListener::SCENARIO_CREATE]);
+        $model = new NotifListener([
+            'scenario' => NotifListener::SCENARIO_CREATE,
+            'group' => $this->group
+        ]);
         $result = [
             'success' => false,
             'msg' => Module::t('module', 'Error In Save Info')
@@ -103,6 +103,7 @@ class ListenerController extends Controller
         $this->performAjaxValidation($model);
         return $this->renderAjax('_form', [
             'model' => $model,
+            'events' => $this->events
         ]);
     }
 
@@ -145,6 +146,7 @@ class ListenerController extends Controller
         $this->performAjaxValidation($model);
         return $this->renderAjax('_form', [
             'model' => $model,
+            'eventsAll' => $this->events
         ]);
     }
 
@@ -186,15 +188,17 @@ class ListenerController extends Controller
 
     private function findModel($id): NotifListener
     {
-        if (($model = NotifListener::findOne($id)) !== null) {
+        $query = NotifListener::find()->andWhere(['id' => $id]);
+
+        if ($this->group) {
+            $query->andWhere(['group' => $this->group]);
+        }
+
+        /** @var NotifListener $model */
+        if ($model = $query->one()) {
             return $model;
         }
 
         throw new NotFoundHttpException(Module::t('module', 'The requested item does not exist.'));
-    }
-
-    private function flash($type, $message): void
-    {
-        Yii::$app->getSession()->setFlash($type == 'error' ? 'danger' : $type, $message);
     }
 }

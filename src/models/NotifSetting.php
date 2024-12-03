@@ -134,15 +134,13 @@ class NotifSetting extends ActiveRecord
         return $setting[$type];
     }
 
-    public static function getRelatedSettings(?string $group = null)
+    public static function getRelatedSettings($events)
     {
         $user = Yii::$app->user->getId();
-        $group = !$group || str_starts_with($group, 'app') ? 'global' : $group;
-        $moduleEvents = array_keys(Module::getInstance()->getEventsByGroup($group));
 
         $listeners = NotifListener::find()->whereUserInclude($user)->all();
         $eventKeys = array_map(fn(NotifListener $notifListener) => $notifListener->event, $listeners);
-        $eventKeys = array_filter($eventKeys, fn($item) => in_array($item, $moduleEvents));
+        $eventKeys = array_filter($eventKeys, fn($item) => in_array($item, $events));
         $userSetting = NotifSetting::find()->whereUser($user)->one();
 
         return array_combine($eventKeys, array_map(function($event) use ($userSetting) {

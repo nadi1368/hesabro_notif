@@ -13,13 +13,14 @@ use yii\db\ActiveRecord;
 use yii2tech\ar\softdelete\SoftDeleteBehavior;
 
 /**
- * @property string title
- * @property string event
- * @property string description
- * @property string userType
- * @property int[] users
- * @property bool sms
- * @property bool email
+ * @property string $title
+ * @property string $group
+ * @property string $event
+ * @property string $description
+ * @property string $userType
+ * @property int[] $users
+ * @property bool $sms
+ * @property bool $email
  * @property int $updated_at
  * @property bool $created_at
  * @property bool $updated_by
@@ -116,7 +117,6 @@ class NotifListener extends ActiveRecord
             [['title', 'event', 'userType'], 'required'],
             [['title', 'event', 'description'], 'string'],
             ['userType', 'in', 'range' => [self::USER_DYNAMIC, self::USER_STATIC]],
-            ['event', 'in', 'range' => Module::getInstance()->eventsKey],
             [
                 'users',
                 'required',
@@ -129,6 +129,7 @@ class NotifListener extends ActiveRecord
     public function attributeLabels()
     {
         return [
+            'id' => Module::t('module', 'Id'),
             'title' => Module::t('module', 'Title'),
             'event' => Module::t('module', 'Event'),
             'description' => Module::t('module', 'Description'),
@@ -146,7 +147,7 @@ class NotifListener extends ActiveRecord
     public function scenarios()
     {
         return [
-            self::SCENARIO_CREATE => ['title', 'event', 'description', 'userType', 'users', 'sms', 'email'],
+            self::SCENARIO_CREATE => ['title', 'event', 'group', 'description', 'userType', 'users', 'sms', 'email'],
             self::SCENARIO_UPDATE => ['title', 'event', 'description', 'userType', 'users', 'sms', 'email'],
         ];
     }
@@ -182,8 +183,7 @@ class NotifListener extends ActiveRecord
             'UserType' => [
                 self::USER_DYNAMIC => Module::t('module', 'Event User'),
                 self::USER_STATIC => Module::t('module', 'Select User')
-            ],
-            'Events' => Module::getInstance()->eventsAll
+            ]
         ];
 
         return isset($code) ? ($items[$type][$code] ?? false) : ($items[$type] ?? false);

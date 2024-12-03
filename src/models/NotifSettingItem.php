@@ -20,7 +20,6 @@ class NotifSettingItem extends Model
     {
         return [
             [['event','sms','email'], 'required'],
-            ['event', 'in', 'range' => Module::getInstance()->eventsKey],
             [['sms', 'email'], 'boolean']
         ];
     }

@@ -39,7 +39,7 @@ class NotifBehavior extends Behavior
     public function sendNotif(): void
     {
         if (
-            !Module::getInstance()->enable ||
+            !Module::getInstance()?->enable ||
             !$this->owner->notifConditionToSend($this->event) ||
             (count($this->scenario) && !in_array($this->owner->getScenario(), $this->scenario))
         ) {
@@ -71,7 +71,7 @@ class NotifBehavior extends Behavior
                     'send_sms_delay' => $smsDelay,
                     'send_email' => $ownerEmailCondition && NotifSetting::canUserEvent($user, $listener->event, NotifSetting::TYPE_EMAIL, $listener->email),
                     'send_email_delay' => $emailDelay,
-                    'slave_id' => Module::getInstance()->getClientId(),
+                    'slave_id' => Module::getInstance()?->getClientId() ?: null,
                 ]);
 
                 if (!$notif->save()) {

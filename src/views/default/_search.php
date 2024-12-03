@@ -15,7 +15,7 @@ use yii\helpers\Url;
 <div class="card-body">
     <div class="row">
         <div class="col-12 col-md-3">
-            <?= $form->field($model, 'event')->dropDownList(Module::getInstance()->eventsAll, ['prompt' => Module::t('module', 'Select')]) ?>
+<!--            --><?php //= $form->field($model, 'event')->dropDownList(Module::getInstance()->eventsAll, ['prompt' => Module::t('module', 'Select')]) ?>
         </div>
         <div class="col-12 col-md-9 align-self-center text-right">
             <?= Html::submitButton(Module::t('module', 'Search'), ['class' => 'btn btn-primary']) ?>

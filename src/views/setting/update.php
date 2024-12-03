@@ -25,7 +25,7 @@ $form = ActiveForm::begin(['id' => 'user-notif-settings'])
                 <div class="col-12 py-2">
                     <div class="row">
                         <div class="col-6">
-                            <?= Module::getInstance()->eventsAll[$setting->event] ?? Module::t('module', 'Unknown') ?>
+                            <?= $eventsAll[$setting->event] ?? Module::t('module', 'Unknown') ?>
                             <?= $form->field($setting, "[$key]event")->hiddenInput(['value' => $setting->event])->label(false) ?>
                         </div>
                         <div class="col-3">
