@@ -88,16 +88,16 @@ class NotifSetting extends ActiveRecord
         $index = $settingItem ? array_search($settingItem, $setting->settings) : false;
 
         if($index !== false) {
-            $setting->settings[$index] = [
-                ...$setting->settings[$index],
-                ...$settings,
-                'event' => $event
-            ];
+            $setting->settings[$index] = array_merge(
+                $setting->settings[$index],
+                $settings,
+                ['event' => $event]
+            );
         } else {
-            $setting->settings[] = [
-                ...$settings,
-                'event' => $event
-            ];
+            $setting->settings[] = array_merge(
+                $settings,
+                ['event' => $event]
+            );
         }
 
         return $setting->save();
