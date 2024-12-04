@@ -16,7 +16,6 @@ class NotifSearch extends Notif
             ['title', 'string'],
             ['seen', 'boolean'],
             ['user_id', 'exist', 'targetClass' => Module::getInstance()->user, 'targetAttribute' => ['user_id' => 'id']],
-            ['event', 'in', 'range' => array_keys(Module::getInstance()->eventsAll)],
         ];
     }
 

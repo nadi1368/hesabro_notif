@@ -11,9 +11,8 @@ class NotifListenerSearch extends NotifListener
     public function rules()
     {
         return [
-            [['title', 'event', 'userType'], 'string'],
+            [['title', 'event', 'userType', 'group'], 'string'],
             ['userType', 'in', 'range' => [self::USER_DYNAMIC, self::USER_STATIC]],
-            ['event', 'in', 'range' => Module::getInstance()->eventsKey],
         ];
     }
 
@@ -22,7 +21,7 @@ class NotifListenerSearch extends NotifListener
         return Model::scenarios();
     }
 
-    public function search($queryParams): ActiveDataProvider
+    public function search($queryParams, ?string $group = null): ActiveDataProvider
     {
         $query = self::find();
         $dataProvider = new ActiveDataProvider([
@@ -38,6 +37,7 @@ class NotifListenerSearch extends NotifListener
         $query->andFilterUserType($this->userType);
         $query->andFilterWhere(['like', 'title', $this->title]);
         $query->andFilterWhere(['event' => $this->event]);
+        $query->andFilterWhere(['group' => $this->group ?: $group]);
 
         return $dataProvider;
     }

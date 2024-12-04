@@ -9,9 +9,6 @@ use yii\base\Module as BaseModule;
 
 /**
  * @property-read int|null $clientId
- * @property-read array $eventsKey
- * @property-read array $eventsValue
- * @property-read array $eventsAll
  */
 class Module extends BaseModule
 {
@@ -28,8 +25,6 @@ class Module extends BaseModule
     public ?string $email = null;
 
     public ?string $clientComponent = null;
-
-    public array $events = [];
 
     public function init()
     {
@@ -51,28 +46,6 @@ class Module extends BaseModule
         }
 
         return 1;
-    }
-
-    public function getEventsKey(): array
-    {
-        return array_reduce($this->events, fn ($carry, $item) => array_merge($carry, array_keys(($item['items'] ?? []))), []);
-    }
-
-    public function getEventsValue(): array
-    {
-        return array_reduce($this->events, fn ($carry, $item) => array_merge($carry, array_values(($item['items'] ?? []))), []);
-    }
-
-    public function getEventsAll(): array
-    {
-        return array_reduce($this->events, fn ($carry, $item) => array_merge($carry, ($item['items'] ?? [])), []);
-    }
-
-    public function getEventsByGroup(string $groupName): array
-    {
-        $group = current(array_filter($this->events, fn($item) => ($item['group'] ?? null) === $groupName));
-
-        return $group['items'] ?? [];
     }
 
     public static function t($category, $message, $params = [], $language = null): string

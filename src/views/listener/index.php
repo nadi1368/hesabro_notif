@@ -11,6 +11,7 @@ use yii\helpers\Url;
 /* @var yii\web\View $this */
 /* @var NotifListenerSearch $searchModel */
 /* @var yii\data\ActiveDataProvider $dataProvider */
+/* @var array $events */
 
 $this->title = Module::t('module', 'Notification System Settings');
 $this->params['breadcrumbs'][] = $this->title;
@@ -43,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <div id="collapseOne" class="panel-collapse collapse" aria-expanded="false">
-            <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+            <?php  echo $this->render('_search', ['model' => $searchModel, 'events' => $events]); ?>
         </div>
     </div>
     <div class="card-body">
@@ -61,10 +62,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'kartik\grid\ExpandRowColumn',
                     'expandIcon' => '<span class="fal fa-chevron-down" style="font-size: 13px"></span>',
                     'collapseIcon' => '<span class="fal fa-chevron-up" style="font-size: 13px"></span>',
-                    'value' => function ($model, $key, $index, $column) {
+                    'value' => function () {
                         return GridView::ROW_COLLAPSED;
                     },
-                    'detail' => function ($model, $key, $index, $column) {
+                    'detail' => function (NotifListener $model) {
                         return Yii::$app->controller->renderPartial('_index', [
                             'model' => $model,
                         ]);
@@ -73,9 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'title',
                 [
                     'attribute' => 'event',
-                    'value' => function (NotifListener $model) {
-                        return NotifListener::itemAlias('Events', $model->event);
-                    },
+                    'value' => fn (NotifListener $model)  => $events[$model->event] ?? '',
                     'format' => 'raw'
                 ],
                 [

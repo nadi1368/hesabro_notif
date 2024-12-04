@@ -58,8 +58,7 @@ class Notif extends ActiveRecord
             [['title', 'description', 'model_class'], 'string'],
             [['seen'], 'boolean'],
             [['seen'], 'default', 'value' => false],
-            ['user_id', 'exist', 'targetClass' => Module::getInstance()->user, 'targetAttribute' => ['user_id' => 'id']],
-            ['event', 'in', 'range' => array_keys(Module::getInstance()->eventsAll)],
+            ['user_id', 'exist', 'targetClass' => Module::getInstance()->user, 'targetAttribute' => ['user_id' => 'id']]
         ];
     }
 

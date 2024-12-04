@@ -8,7 +8,6 @@ use hesabro\notif\models\NotifSettingItem;
 use hesabro\notif\Module;
 use Yii;
 use yii\filters\AccessControl;
-use yii\web\Controller;
 
 class SettingController extends Controller
 {
@@ -58,7 +57,8 @@ class SettingController extends Controller
 
         return $this->renderAjax('update', [
             'model' => $model,
-            'events' => array_values(NotifSetting::getRelatedSettings(Yii::$app->request->queryParams['group'] ?? null))
+            'events' => array_values(NotifSetting::getRelatedSettings(array_keys($this->events))),
+            'eventsAll' => $this->events
         ]);
     }
 }
