@@ -9,7 +9,7 @@ interface NotifInterface
 
     public function notifTitle(string $event): string;
 
-    public function notifLink(string $event): ?string;
+    public function notifLink(string $event, ?int $userId): ?string;
 
     public function notifDescription(string $event): ?string;
 

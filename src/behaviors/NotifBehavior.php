@@ -55,12 +55,12 @@ class NotifBehavior extends Behavior
         $smsDelay = $this->owner->notifSmsDelayToSend($this->event) ?: 0;
         $ownerEmailCondition = $this->owner->notifEmailConditionToSend($this->event);
         $emailDelay = $this->owner->notifEmailDelayToSend($this->event) ?: 0;
-        $link = $this->owner->notifLink($this->event);
 
         foreach ($listeners as $listener) {
             $users = $listener->userType === NotifListener::USER_DYNAMIC ? $this->owner->notifUsers($this->event) : $listener->users;
 
             foreach ($users as $user) {
+                $link = $this->owner->notifLink($this->event, $user);
                 $notif = new Notif([
                     'model_class' => $this->owner::class,
                     'model_id' => $this->owner->getPrimaryKey(),
