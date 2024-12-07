@@ -45,5 +45,6 @@ return [
     'Text' => 'متن',
     'System' => 'سیستم',
     'See More Details' => 'مشاهده اطلاعات بیشتر',
-    'Details' => 'جزئیات'
+    'Details' => 'جزئیات',
+    'Related Link' => 'لینک مرتبط'
 ];

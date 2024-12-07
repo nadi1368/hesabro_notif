@@ -4,6 +4,7 @@ use hesabro\helpers\widgets\grid\GridView;
 use hesabro\notif\models\Notif;
 use hesabro\notif\models\NotifSearch;
 use hesabro\notif\Module;
+use yii\widgets\Pjax;
 
 /* @var yii\web\View $this */
 /* @var NotifSearch $searchModel */
@@ -26,6 +27,8 @@ $this->registerCss(<<<CSS
     margin-bottom: unset !important;
 }
 CSS);
+
+Pjax::begin(['id' => 'pjax-notif-default-index'])
 ?>
 <div class="card">
     <div class="panel-group" id="accordion">
@@ -46,7 +49,24 @@ CSS);
             'dataProvider' => $dataProvider,
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
-                'title',
+                'title' => [
+                    'attribute' => 'title',
+                    'value' => fn(Notif $notif) => \yii\helpers\Html::a($notif->title, 'javascript:void(0)', [
+                        'title' => Module::t('module', 'Details'),
+                        'id' => 'view-announce-btn',
+                        'class' => 'message-item',
+                        'data-size' => 'modal-lg',
+                        'data-title' => $notif->title,
+                        'data-toggle' => 'modal',
+                        'data-target' => '#modal-pjax',
+                        'data-url' => Module::createUrl('default/view', ['id' => ((string) $notif->_id)]),
+                        'data-reload-pjax-container-on-show' => 1,
+                        'data-reload-pjax-container' => 'pjax-notif-default-index',
+                        'data-handleFormSubmit' => 0,
+                        'disabled' => true
+                    ]),
+                    'format' => 'raw'
+                ],
                 'description' => [
                     'attribute' => 'description',
                     'value' => fn(Notif $notif) => "<div class='notif-text'>$notif->description</div>",
@@ -66,3 +86,4 @@ CSS);
         ]); ?>
     </div>
 </div>
+<?php Pjax::end() ?>
