@@ -43,5 +43,7 @@ return [
     'Send Sms Delay' => 'تاخیر در ارسال پیامک',
     'Send Sms' => 'ارسال پیامک',
     'Text' => 'متن',
-    'System' => 'سیستم'
+    'System' => 'سیستم',
+    'See More Details' => 'مشاهده اطلاعات بیشتر',
+    'Details' => 'جزئیات'
 ];

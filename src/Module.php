@@ -6,6 +6,7 @@ use Exception;
 use hesabro\notif\interfaces\Notify;
 use Yii;
 use yii\base\Module as BaseModule;
+use yii\helpers\Url;
 
 /**
  * @property-read int|null $clientId
@@ -37,6 +38,14 @@ class Module extends BaseModule
         if ($this->email && (!is_string($this->email) || !((new $this->email()) instanceof Notify))) {
             throw new Exception('email attribute in Notif module, must be instance of Notify', 500);
         }
+    }
+
+    public static function createUrl(string $path = null, array $params = [])
+    {
+        $moduleId = self::getInstance()?->id;
+
+        $path = trim($path ?: '', '/');
+        return Url::to([rtrim("/$moduleId/$path", '/'), ...$params]);
     }
 
     public function getClientId(): int

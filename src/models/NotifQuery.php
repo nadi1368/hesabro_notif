@@ -14,7 +14,7 @@ class NotifQuery extends ActiveQuery
 {
     public function own(): NotifQuery
     {
-        return $this->andWhere(['user_id' => Yii::$app->user->id, 'slave_id' => \Yii::$app->client->id]);
+        return $this->andWhere(['user_id' => Yii::$app->user->id]);
     }
 
     public function unseen(): NotifQuery

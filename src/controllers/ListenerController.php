@@ -146,7 +146,7 @@ class ListenerController extends Controller
         $this->performAjaxValidation($model);
         return $this->renderAjax('_form', [
             'model' => $model,
-            'eventsAll' => $this->events
+            'events' => $this->events
         ]);
     }
 
