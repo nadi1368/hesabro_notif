@@ -5,6 +5,7 @@ namespace hesabro\notif\models;
 use hesabro\notif\Module;
 use Yii;
 use yii\base\Event;
+use yii\helpers\Html;
 use yii\mongodb\ActiveRecord;
 
 /**
@@ -23,6 +24,7 @@ use yii\mongodb\ActiveRecord;
  * @property int $send_sms_delay
  * @property boolean $send_email
  * @property int $send_email_delay
+ * @property int $link
  * @property int $created_by
  * @property int $created_at
  *
@@ -42,7 +44,7 @@ class Notif extends ActiveRecord
     {
         return [
             '_id', 'title', 'description', 'seen', 'model_class', 'model_id', 'event',
-            'send_sms', 'send_sms_delay', 'send_email', 'send_email_delay',
+            'send_sms', 'send_sms_delay', 'send_email', 'send_email_delay', 'link',
             'user_id', 'created_at', 'created_by', 'slave_id'
         ];
     }
@@ -55,7 +57,7 @@ class Notif extends ActiveRecord
             [['send_sms', 'send_email'], 'boolean'],
             [['send_sms', 'send_email'], 'default', 'value' => false],
             [['send_sms_delay', 'send_email_delay'], 'default', 'value' => 0],
-            [['title', 'description', 'model_class'], 'string'],
+            [['title', 'description', 'model_class', 'link'], 'string'],
             [['seen'], 'boolean'],
             [['seen'], 'default', 'value' => false],
             ['user_id', 'exist', 'targetClass' => Module::getInstance()->user, 'targetAttribute' => ['user_id' => 'id']]
@@ -117,14 +119,29 @@ class Notif extends ActiveRecord
     public function sendEmail(): void
     {
         if (Module::getInstance()->email  && $this->send_email && $this->user) {
+            $text = ($this->description ?: '') . implode($this->link ? [
+                    '<br />',
+                    Module::t('module', 'See More Details'),
+                    ': <br />',
+                    Html::a($this->link, $this->link)
+                ] : []);
+
             Module::getInstance()->email::send(
                 $this->user,
                 $this->title,
-                $this->description,
+                $text,
                 $this->send_email_delay,
                 $this->model_class,
                 $this->model_id
             );
+        }
+    }
+
+    public function markAsSeen(): void
+    {
+        if (!$this->seen) {
+            $this->seen = true;
+            $this->save(false);
         }
     }
 
@@ -151,15 +168,30 @@ class Notif extends ActiveRecord
     /**
      * @return Notif[]
      */
-    public static function myUnseen(): array
+    public static function findCurrentUserUnSeen($limit = null): array
+    {
+        $query = self::find()
+            ->own();
+
+        if ($limit) {
+            $query->limit($limit);
+        }
+
+        return $query->unseen()->all();
+    }
+
+    /**
+     * @return Notif[]
+     */
+    public static function countCurrentUserUnSeen(): int
     {
         return self::find()
             ->own()
             ->unseen()
-            ->all();
+            ->count();
     }
 
-    public static function myAll(): array
+    public static function findCurrentUser(): array
     {
         return self::find()
             ->own()
