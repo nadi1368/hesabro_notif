@@ -4,6 +4,7 @@ use hesabro\helpers\widgets\grid\GridView;
 use hesabro\notif\models\Notif;
 use hesabro\notif\models\NotifSearch;
 use hesabro\notif\Module;
+use yii\helpers\Html;
 use yii\widgets\Pjax;
 
 /* @var yii\web\View $this */
@@ -51,12 +52,12 @@ Pjax::begin(['id' => 'pjax-notif-default-index'])
                 ['class' => 'yii\grid\SerialColumn'],
                 'title' => [
                     'attribute' => 'title',
-                    'value' => fn(Notif $notif) => \yii\helpers\Html::a($notif->title, 'javascript:void(0)', [
+                    'value' => fn(Notif $notif) => Html::a($notif->title, 'javascript:void(0)', [
                         'title' => Module::t('module', 'Details'),
                         'id' => 'view-announce-btn',
                         'class' => 'message-item',
                         'data-size' => 'modal-lg',
-                        'data-title' => $notif->title,
+                        'data-title' => Module::t('module','Notification Details') . ' ' . $notif->title,
                         'data-toggle' => 'modal',
                         'data-target' => '#modal-pjax',
                         'data-url' => Module::createUrl('default/view', ['id' => ((string) $notif->_id)]),
@@ -65,11 +66,6 @@ Pjax::begin(['id' => 'pjax-notif-default-index'])
                         'data-handleFormSubmit' => 0,
                         'disabled' => true
                     ]),
-                    'format' => 'raw'
-                ],
-                'description' => [
-                    'attribute' => 'description',
-                    'value' => fn(Notif $notif) => "<div class='notif-text'>$notif->description</div>",
                     'format' => 'raw'
                 ],
                 'created_at' => [

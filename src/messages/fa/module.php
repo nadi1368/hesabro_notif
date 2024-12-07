@@ -46,5 +46,6 @@ return [
     'System' => 'سیستم',
     'See More Details' => 'مشاهده اطلاعات بیشتر',
     'Details' => 'جزئیات',
-    'Related Link' => 'لینک مرتبط'
+    'Related Link' => 'لینک مرتبط',
+    'Notification Details' => 'جزئیات اعلان'
 ];

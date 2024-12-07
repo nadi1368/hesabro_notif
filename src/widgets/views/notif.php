@@ -49,7 +49,7 @@ Pjax::begin(['id' => "notif-list-pjax", 'options' => ['class' => 'd-flex flex-co
                                 'id' => 'view-announce-btn',
                                 'class' => 'message-item',
                                 'data-size' => 'modal-lg',
-                                'data-title' => $item->title,
+                                'data-title' => Module::t('module','Notification Details') . ' ' . $item->title,
                                 'data-toggle' => 'modal',
                                 'data-target' => '#modal-pjax',
                                 'data-url' => Module::createUrl('default/view', ['id' => ((string) $item->_id)]),
