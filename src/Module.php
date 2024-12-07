@@ -45,7 +45,8 @@ class Module extends BaseModule
         $moduleId = self::getInstance()?->id;
 
         $path = trim($path ?: '', '/');
-        return Url::to([rtrim("/$moduleId/$path", '/'), ...$params]);
+        return Url::to(array_merge([rtrim("/$moduleId/$path", '/')], $params));
+
     }
 
     public function getClientId(): int
