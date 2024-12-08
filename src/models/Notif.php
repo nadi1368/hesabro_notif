@@ -147,8 +147,10 @@ class Notif extends ActiveRecord
 
     public function beforeSave($insert)
     {
-        $this->created_by = Yii::$app->user?->id;
-        $this->created_at = time();
+        if ($insert) {
+            $this->created_by = Yii::$app->user?->id;
+            $this->created_at = time();
+        }
 
         return parent::beforeSave($insert);
     }
@@ -157,12 +159,14 @@ class Notif extends ActiveRecord
     {
         parent::afterSave($insert, $changedAttributes);
 
-        $this->sendSms();
-        $this->sendEmail();
+        if ($insert) {
+            $this->sendSms();
+            $this->sendEmail();
 
-        $this->trigger(self::EVENT_AFTER_INSERT_NOTIF, new class(['notif' => $this]) extends Event {
-            public $notif = null;
-        });
+            $this->trigger(self::EVENT_AFTER_INSERT_NOTIF, new class(['notif' => $this]) extends Event {
+                public $notif = null;
+            });
+        }
     }
 
     /**
